@@ -45,7 +45,7 @@ public class AmbulanceApiControllerV1 {
     }
 
     @DeleteMapping(value = "/ambulance")
-    public ResponseEntity<Ambulance> deleteAmbulance() {
+    public ResponseEntity deleteAmbulance() {
         Address address = new Address("Bonnie Brae", "TX", "Denton", "76201");//Ambulance is dependent to ADDRESS class
         List<String> phoneNumbers = List.of("123-234-5366", "394-384-0989"); //List.of() to create small list of element
         Ambulance ambulance = new Ambulance("Blue cross blue shield", phoneNumbers, 78.07, 77.79, true, LocalDate.now(), address);
