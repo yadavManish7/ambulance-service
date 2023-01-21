@@ -1,64 +1,60 @@
 package com.aggregator.ambulanceservice.controller;
 
+import com.aggregator.ambulanceservice.dto.AddressDTO;
+import com.aggregator.ambulanceservice.dto.AmbulanceDTO;
 import com.aggregator.ambulanceservice.model.Address;
 import com.aggregator.ambulanceservice.model.Ambulance;
+import com.aggregator.ambulanceservice.service.AmbulanceService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
-//@Controller   // For Websites
-@RestController  //For API
+@RestController
 @RequestMapping(value = "/api/v1")  // for request handling methods
+
 public class AmbulanceApiControllerV1 {
 
+@Autowired
+private AmbulanceService ambulanceService;
 
     @GetMapping(value = "/ping")
     public String ping() {
         return "Rest Controller executed in V1";
     }
 
-    @GetMapping(value = "/ambulance")
-    public ResponseEntity<Ambulance> getAmbulanceDetail() {
-        Address address = new Address("Bonnie Brae", "TX", "Denton", "76201");//Ambulance is dependent to ADDRESS class
-        List<String> phoneNumbers = List.of("123-234-5366", "394-384-0989"); //List.of() to create small list of element
-        Ambulance ambulance = new Ambulance("Blue cross blue shield", phoneNumbers, 78.07, 77.79, true, LocalDate.now(), address);
-        return ResponseEntity.status(HttpStatus.OK).body(ambulance); //Returning ambulance OBJECT
+    @GetMapping(value = "/ambulance/{id}")
+    public ResponseEntity<Ambulance> getAmbulanceDetail(@PathVariable(value = "id") String ambulanceId ) {    //UUID generates Unique key
+       Optional<Ambulance>  optionalAmbulance = ambulanceService.getAmbulanceDetail(ambulanceId);
+        return optionalAmbulance.map(ambulance -> ResponseEntity.status(HttpStatus.OK).body(ambulance)).orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
     @PostMapping(value = "/ambulance")
-    public ResponseEntity<Ambulance> addAmbulance() {
-        Address address = new Address("Bonnie Brae", "TX", "Denton", "76201");//Ambulance is dependent to ADDRESS class
-        List<String> phoneNumbers = List.of("123-234-5366", "394-384-0989"); //List.of() to create small list of element
-        Ambulance ambulance = new Ambulance("Blue cross blue shield", phoneNumbers, 78.07, 77.79, true, LocalDate.now(), address);
-        return ResponseEntity.status(HttpStatus.CREATED).body(ambulance);
+    public  ResponseEntity<Ambulance> createAmbulance(@RequestBody AmbulanceDTO ambulanceDTO) {//AmbulanceDto is Object asking from User
+        Ambulance  createdAmbulance =ambulanceService.createAmbulance(ambulanceDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdAmbulance);
     }
 
-    @PutMapping(value = "/ambulance")
-    public ResponseEntity<Ambulance> editAmbulance() {
-        Address address = new Address("Bonnie Brae", "TX", "Denton", "76201");//Ambulance is dependent to ADDRESS class
-        List<String> phoneNumbers = List.of("123-234-5366", "394-384-0989"); //List.of() to create small list of element
-        Ambulance ambulance = new Ambulance("Blue cross blue shield", phoneNumbers, 78.07, 77.79, true, LocalDate.now(), address);
-        return ResponseEntity.status(HttpStatus.OK).body(ambulance); //Returning ambulance OBJECT
+    @PutMapping(value = "/ambulance/{id}")
+    public ResponseEntity<Ambulance> updateAmbulance(@PathVariable(value = "id") String ambulanceId, @RequestBody AmbulanceDTO ambulanceDTO) {
+          Ambulance updatedAmbulance  =ambulanceService.updateAmbulance(ambulanceId,ambulanceDTO);
+        return ResponseEntity.status(HttpStatus.OK).body(updatedAmbulance); //Returning updated ambulance OBJECT
     }
 
-    @DeleteMapping(value = "/ambulance")
-    public ResponseEntity deleteAmbulance() {
-        Address address = new Address("Bonnie Brae", "TX", "Denton", "76201");//Ambulance is dependent to ADDRESS class
-        List<String> phoneNumbers = List.of("123-234-5366", "394-384-0989"); //List.of() to create small list of element
-        Ambulance ambulance = new Ambulance("Blue cross blue shield", phoneNumbers, 78.07, 77.79, true, LocalDate.now(), address);
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ambulance);
+    @DeleteMapping(value = "/ambulance/{id}")
+    public ResponseEntity<String> deleteAmbulance(@PathVariable(value = "id") String ambulanceId) {
+        ambulanceService.deleteAmbulance(ambulanceId);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Deleted");
     }
 
-    @GetMapping(value = "/ambulanceList")
-    public ResponseEntity<List<Ambulance>> ambulanceList() {
-        Address address = new Address("Bonnie Brae", "TX", "Denton", "76201");//Ambulance is dependent to ADDRESS class
-        List<String> phoneNumbers = List.of("123-234-5366", "394-384-0989");
-        Ambulance ambulance1 = new Ambulance("Blue cross blue shield", phoneNumbers, 78.07, 77.79, true, LocalDate.now(), address);
-        Ambulance ambulance2 = new Ambulance("Texas Medical center", phoneNumbers, 78.07, 77.79, true, LocalDate.now(), address);
-        return ResponseEntity.status(HttpStatus.OK).body(List.of(ambulance1, ambulance2));
+    @GetMapping(value = "/ambulance/list")  //@RequestParam used for filtration
+    public ResponseEntity<List<Ambulance>> getAmbulanceList(@RequestParam(value = "city",required = false)String cityName,@RequestParam(value = "lat",required = false) Double lat,@RequestParam(value = "lon",required = false) Double lon) {
+        List<Ambulance> ambulanceList =ambulanceService.getAmbulanceList();
+        return ResponseEntity.status(HttpStatus.OK).body(ambulanceList);
     }
 
 

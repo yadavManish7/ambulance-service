@@ -11,8 +11,7 @@ public class AmbulanceApiControllerV2 {
 
     @GetMapping(value = "/greeting")
     public String greetingMessage(){
-        String msg = "Welcome to springboot V2";
-        return msg;
+        return "Welcome to spring boot V2";
     }
 
 

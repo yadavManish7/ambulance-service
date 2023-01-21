@@ -12,18 +12,20 @@ import java.util.List;
 //@EqualsAndHashCode
 public class Ambulance {
 
+    private String id;
+
     private String name;
-    private List<String> phone;
-   // @Getter  to add getter/setter for specific state
-    private double longitude;
-   // @Setter to add getter/setter for specific variable
+
+    private List<String> phone;     // @Getter  to add getter/setter for specific state
+
+    private double longitude;      // @Setter to add getter/setter for specific variable
+
     private  double latitude;
 
-    private boolean isAvailable;
+    private boolean available;
 
     private LocalDate createdOn;
 
     private  Address address;
-
 
 }
