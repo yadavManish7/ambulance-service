@@ -1,45 +1,63 @@
 package com.aggregator.ambulanceservice.service;
 
-import com.aggregator.ambulanceservice.dto.AddressDTO;
 import com.aggregator.ambulanceservice.dto.AmbulanceDTO;
-import com.aggregator.ambulanceservice.model.Address;
 import com.aggregator.ambulanceservice.model.Ambulance;
+import com.aggregator.ambulanceservice.repository.AmbulanceRepo;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class AmbulanceService {
 
+    @Autowired
+    private AmbulanceRepo ambulanceRepo;
+
     public List<Ambulance> getAmbulanceList(){
-        return new ArrayList<>();
+        return ambulanceRepo.findAll();
     }
 
-    public Optional<Ambulance> getAmbulanceDetail(String id){ //Optional because it might contain null value
-        Address address = new Address("Bonnie Brae", "TX", "Denton", "76201");//Ambulance is dependent to ADDRESS class
-        List<String> phoneNumbers = List.of("123-234-5366", "394-384-0989");
-        Ambulance ambulance = new Ambulance(UUID.randomUUID().toString(),"Blue cross blue shield", phoneNumbers, 78.07, 77.79, true, LocalDate.now(), address);
-        return Optional.of(ambulance);
+    public Ambulance getAmbulanceDetail(Long ambulanceId){ //Optional because it might contain null value
+
+       Optional<Ambulance> optionalAmbulance= ambulanceRepo.findById(ambulanceId);//getting from DB if exist
+
+        if(optionalAmbulance.isPresent()){
+           Ambulance ambulanceToGetDetail =optionalAmbulance.get();
+            ambulanceToGetDetail.getName();
+            ambulanceToGetDetail.getLatitude();
+            ambulanceToGetDetail.getLongitude();
+            ambulanceToGetDetail.getCreatedOn();
+            ambulanceToGetDetail.isAvailable();
+            return ambulanceToGetDetail;
+        }else {
+            throw new RuntimeException(String.format("The ambulance with id %d does not exist", ambulanceId));
+        }
     }
 
     public Ambulance createAmbulance(AmbulanceDTO ambulanceDTO){
-        AddressDTO addressDTO = ambulanceDTO.getAddress();
-        Address address = new Address(addressDTO.getStreetName(), addressDTO.getState(), addressDTO.getCity(), addressDTO.getZipCode());
-        return new Ambulance(UUID.randomUUID().toString(),ambulanceDTO.getName(), ambulanceDTO.getPhone(),ambulanceDTO.getLatitude(), ambulanceDTO.getLongitude(),ambulanceDTO.isAvailable(), LocalDate.now(),address);
+        Ambulance ambulance = new Ambulance(ambulanceDTO.getName(),ambulanceDTO.getLatitude(),ambulanceDTO.getLongitude(),ambulanceDTO.isAvailable(),LocalDate.now());
+        return ambulanceRepo.save(ambulance);
     }
 
-    public Ambulance updateAmbulance(String ambulanceId , AmbulanceDTO ambulanceDTO){
-        AddressDTO addressDTO = ambulanceDTO.getAddress();
-        Address address = new Address(addressDTO.getStreetName(), addressDTO.getState(), addressDTO.getCity(), addressDTO.getZipCode());
-        return new Ambulance(UUID.randomUUID().toString(),ambulanceDTO.getName(), ambulanceDTO.getPhone(),ambulanceDTO.getLatitude(), ambulanceDTO.getLongitude(),ambulanceDTO.isAvailable(), LocalDate.now(),address);
+    public Ambulance updateAmbulance(Long ambulanceId , AmbulanceDTO ambulanceDTO){
+       Optional<Ambulance> optionalAmbulance = ambulanceRepo.findById(ambulanceId);
+
+       if(optionalAmbulance.isPresent()){
+           Ambulance ambulanceToUpdate = optionalAmbulance.get();
+           ambulanceToUpdate.setName(ambulanceDTO.getName());
+           ambulanceToUpdate.setLatitude(ambulanceDTO.getLatitude());
+           ambulanceToUpdate.setLongitude(ambulanceDTO.getLongitude());
+           ambulanceToUpdate.setAvailable(ambulanceDTO.isAvailable());
+           return ambulanceRepo.save(ambulanceToUpdate);
+       }else {
+           throw new RuntimeException(String.format("The ambulance with id %d does not exist",ambulanceId));
+       }
     }
 
-    public void deleteAmbulance(String ambulanceId){
-
+    public void deleteAmbulance(Long ambulanceId){
+        ambulanceRepo.deleteById(ambulanceId);
     }
 
 

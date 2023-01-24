@@ -19,7 +19,7 @@ public class AmbulanceDTO {   //Data Transfer Object to transfer Json data to Ja
 
     private String name;
 
-    private List<String> phone;          // @Getter  to add getter/setter for specific state
+    //private List<String> phone;          // @Getter  to add getter/setter for specific state
 
     private double longitude;        // @Setter to add getter/setter for specific variable
 
@@ -27,7 +27,7 @@ public class AmbulanceDTO {   //Data Transfer Object to transfer Json data to Ja
 
     private boolean available;
 
-    private AddressDTO address;
+    //private AddressDTO address;
 
 
 }

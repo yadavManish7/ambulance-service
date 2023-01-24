@@ -1,18 +1,15 @@
 package com.aggregator.ambulanceservice.controller;
 
-import com.aggregator.ambulanceservice.dto.AddressDTO;
 import com.aggregator.ambulanceservice.dto.AmbulanceDTO;
-import com.aggregator.ambulanceservice.model.Address;
 import com.aggregator.ambulanceservice.model.Ambulance;
 import com.aggregator.ambulanceservice.service.AmbulanceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.time.LocalDate;
+
+import javax.validation.Valid;
 import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 
 @RestController
 @RequestMapping(value = "/api/v1")  // for request handling methods
@@ -28,25 +25,25 @@ private AmbulanceService ambulanceService;
     }
 
     @GetMapping(value = "/ambulance/{id}")
-    public ResponseEntity<Ambulance> getAmbulanceDetail(@PathVariable(value = "id") String ambulanceId ) {    //UUID generates Unique key
-       Optional<Ambulance>  optionalAmbulance = ambulanceService.getAmbulanceDetail(ambulanceId);
-        return optionalAmbulance.map(ambulance -> ResponseEntity.status(HttpStatus.OK).body(ambulance)).orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+    public ResponseEntity<Ambulance> getAmbulanceDetail(@PathVariable(value = "id") Long ambulanceId ) {    //UUID generates Unique key
+       Ambulance ambulance= ambulanceService.getAmbulanceDetail(ambulanceId);
+        return ResponseEntity.status(HttpStatus.OK).body(ambulance);
     }
 
     @PostMapping(value = "/ambulance")
-    public  ResponseEntity<Ambulance> createAmbulance(@RequestBody AmbulanceDTO ambulanceDTO) {//AmbulanceDto is Object asking from User
+    public  ResponseEntity<Ambulance> createAmbulance(@Valid @RequestBody AmbulanceDTO ambulanceDTO) {//AmbulanceDto is Object asking from User
         Ambulance  createdAmbulance =ambulanceService.createAmbulance(ambulanceDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdAmbulance);
     }
 
     @PutMapping(value = "/ambulance/{id}")
-    public ResponseEntity<Ambulance> updateAmbulance(@PathVariable(value = "id") String ambulanceId, @RequestBody AmbulanceDTO ambulanceDTO) {
+    public ResponseEntity<Ambulance> updateAmbulance(@PathVariable(value = "id") Long ambulanceId, @RequestBody AmbulanceDTO ambulanceDTO) {
           Ambulance updatedAmbulance  =ambulanceService.updateAmbulance(ambulanceId,ambulanceDTO);
         return ResponseEntity.status(HttpStatus.OK).body(updatedAmbulance); //Returning updated ambulance OBJECT
     }
 
     @DeleteMapping(value = "/ambulance/{id}")
-    public ResponseEntity<String> deleteAmbulance(@PathVariable(value = "id") String ambulanceId) {
+    public ResponseEntity<String> deleteAmbulance(@PathVariable(value = "id") Long ambulanceId) {
         ambulanceService.deleteAmbulance(ambulanceId);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Deleted");
     }
