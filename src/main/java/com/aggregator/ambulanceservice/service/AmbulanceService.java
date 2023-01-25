@@ -1,9 +1,11 @@
 package com.aggregator.ambulanceservice.service;
 
 import com.aggregator.ambulanceservice.dto.AmbulanceDTO;
+import com.aggregator.ambulanceservice.exception.AmbulanceNotFoundException;
 import com.aggregator.ambulanceservice.model.Ambulance;
 import com.aggregator.ambulanceservice.repository.AmbulanceRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.List;
@@ -24,15 +26,9 @@ public class AmbulanceService {
        Optional<Ambulance> optionalAmbulance= ambulanceRepo.findById(ambulanceId);//getting from DB if exist
 
         if(optionalAmbulance.isPresent()){
-           Ambulance ambulanceToGetDetail =optionalAmbulance.get();
-            ambulanceToGetDetail.getName();
-            ambulanceToGetDetail.getLatitude();
-            ambulanceToGetDetail.getLongitude();
-            ambulanceToGetDetail.getCreatedOn();
-            ambulanceToGetDetail.isAvailable();
-            return ambulanceToGetDetail;
+           return optionalAmbulance.get();
         }else {
-            throw new RuntimeException(String.format("The ambulance with id %d does not exist", ambulanceId));
+            throw new  AmbulanceNotFoundException(String.format("The ambulance with id %d does not exist",ambulanceId),404);
         }
     }
 
@@ -52,14 +48,15 @@ public class AmbulanceService {
            ambulanceToUpdate.setAvailable(ambulanceDTO.isAvailable());
            return ambulanceRepo.save(ambulanceToUpdate);
        }else {
-           throw new RuntimeException(String.format("The ambulance with id %d does not exist",ambulanceId));
+           throw new AmbulanceNotFoundException(String.format("The ambulance with id %d does not exist",ambulanceId),404);
        }
     }
 
-    public void deleteAmbulance(Long ambulanceId){
-        ambulanceRepo.deleteById(ambulanceId);
+    public void deleteAmbulance(Long ambulanceId) {
+        try {
+            ambulanceRepo.deleteById(ambulanceId);
+        } catch (EmptyResultDataAccessException e) {
+            throw new AmbulanceNotFoundException(String.format("The ambulance with id %d does not exist", ambulanceId), 404);
+        }
     }
-
-
-
 }
