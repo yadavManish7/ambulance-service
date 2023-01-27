@@ -19,10 +19,6 @@ public class AmbulanceApiControllerV1 {
 @Autowired
 private AmbulanceService ambulanceService;
 
-    @GetMapping(value = "/ping")
-    public String ping() {
-        return "Rest Controller executed in V1";
-    }
 
     @GetMapping(value = "/ambulance/{id}")
     public ResponseEntity<Ambulance> getAmbulanceDetail(@PathVariable(value = "id") Long ambulanceId ) {    //UUID generates Unique key

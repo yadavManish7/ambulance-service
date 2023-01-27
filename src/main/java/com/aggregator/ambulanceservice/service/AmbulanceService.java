@@ -22,9 +22,7 @@ public class AmbulanceService {
     }
 
     public Ambulance getAmbulanceDetail(Long ambulanceId){ //Optional because it might contain null value
-
        Optional<Ambulance> optionalAmbulance= ambulanceRepo.findById(ambulanceId);//getting from DB if exist
-
         if(optionalAmbulance.isPresent()){
            return optionalAmbulance.get();
         }else {

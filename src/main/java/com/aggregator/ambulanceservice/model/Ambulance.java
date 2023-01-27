@@ -23,25 +23,26 @@ public class Ambulance {
 
     @Setter
     private double longitude;
-    // @Setter to add getter/setter for specific variable
+
     @Setter
     private double latitude;
 
     @Setter
     @Column(name = "is_available")
-    private boolean available;
+    private boolean isAvailable;
 
     @Column(name = "created_on")
     private LocalDate createdOn;
 
+
     //private  Address address;
 
 
-    public Ambulance(String name, double longitude, double latitude, boolean available, LocalDate createdOn) {
+    public Ambulance(String name, double longitude, double latitude, boolean isAvailable, LocalDate createdOn) {
         this.name = name;
         this.longitude = longitude;
         this.latitude = latitude;
-        this.available = available;
+        this.isAvailable = isAvailable;
         this.createdOn = createdOn;
     }
 

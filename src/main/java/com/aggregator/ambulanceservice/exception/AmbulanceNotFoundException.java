@@ -1,8 +1,11 @@
 package com.aggregator.ambulanceservice.exception;
 
+import lombok.Getter;
+
 public class AmbulanceNotFoundException extends  RuntimeException{
 
     private String message;
+    @Getter
     private  int responseCode;
 
     public AmbulanceNotFoundException(String message, int responseCode){

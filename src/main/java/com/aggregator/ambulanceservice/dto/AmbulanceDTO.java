@@ -11,7 +11,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter                 // This applies to the whole class
-@ToString
 //@EqualsAndHashCode
 public class AmbulanceDTO {   //Data Transfer Object to transfer Json data to Java Object.
 
