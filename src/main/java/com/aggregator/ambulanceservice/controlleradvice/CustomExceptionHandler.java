@@ -14,7 +14,7 @@ public class CustomExceptionHandler {
     @ExceptionHandler(AmbulanceNotFoundException.class)
     public ResponseEntity<HashMap<String,Object>> handleAmbulanceNotFoundException(AmbulanceNotFoundException ex){
         HashMap<String,Object>  errorRespondMap= new HashMap<>();  // Key is always String in Json Object, Vlaue can be anything, String, Int, boolean
-        errorRespondMap.put("status","error");
+        errorRespondMap.put("status","error");  //Create DTO class with sates status, message to send Json object if you have huge states
         errorRespondMap.put("message",ex.getMessage());
         errorRespondMap.put("timestamp", new Date());
         return ResponseEntity.status(ex.getResponseCode()).body(errorRespondMap);
