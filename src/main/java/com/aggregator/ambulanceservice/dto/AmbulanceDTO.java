@@ -1,11 +1,6 @@
 package com.aggregator.ambulanceservice.dto;
 
-import com.aggregator.ambulanceservice.model.Address;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
-
+import lombok.*;
 import java.util.List;
 
 @NoArgsConstructor
@@ -14,19 +9,17 @@ import java.util.List;
 //@EqualsAndHashCode
 public class AmbulanceDTO {   //Data Transfer Object to transfer Json data to Java Object.
 
-    //private int id;   id is auto generated from server
 
     private String name;
 
-    //private List<String> phone;          // @Getter  to add getter/setter for specific state
+    private List<String> phones;
 
-    private double longitude;        // @Setter to add getter/setter for specific variable
+    private double longitude;        // add getter/setter for specific variable
 
     private  double latitude;
 
     private boolean available;
 
-    //private AddressDTO address;
-
+    private AddressDTO address;
 
 }

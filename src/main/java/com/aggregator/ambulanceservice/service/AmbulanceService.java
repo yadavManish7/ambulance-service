@@ -1,9 +1,12 @@
 package com.aggregator.ambulanceservice.service;
 
+import com.aggregator.ambulanceservice.dto.AddressDTO;
 import com.aggregator.ambulanceservice.dto.AmbulanceDTO;
 import com.aggregator.ambulanceservice.exception.AmbulanceNotFoundException;
+import com.aggregator.ambulanceservice.model.Address;
 import com.aggregator.ambulanceservice.model.Ambulance;
 import com.aggregator.ambulanceservice.repository.AmbulanceRepo;
+import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
@@ -31,7 +34,9 @@ public class AmbulanceService {
     }
 
     public Ambulance createAmbulance(AmbulanceDTO ambulanceDTO){
-        Ambulance ambulance = new Ambulance(ambulanceDTO.getName(),ambulanceDTO.getLatitude(),ambulanceDTO.getLongitude(),ambulanceDTO.isAvailable(),LocalDate.now());
+        AddressDTO addressDTO = ambulanceDTO.getAddress();
+        Address address = new Address(addressDTO.getCity(),addressDTO.getState(),addressDTO.getStreetName(),addressDTO.getZipCode());
+        Ambulance ambulance = new Ambulance(ambulanceDTO.getName(),ambulanceDTO.getLatitude(),ambulanceDTO.getLongitude(),ambulanceDTO.isAvailable(),LocalDate.now(),address,ambulanceDTO.getPhones());
         return ambulanceRepo.save(ambulance);
     }
 
@@ -57,4 +62,6 @@ public class AmbulanceService {
             throw new AmbulanceNotFoundException(String.format("The ambulance with id %d does not exist", ambulanceId), 404);
         }
     }
+
+
 }

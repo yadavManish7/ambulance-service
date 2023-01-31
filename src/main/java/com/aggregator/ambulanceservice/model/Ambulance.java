@@ -1,10 +1,11 @@
 package com.aggregator.ambulanceservice.model;
 
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.List;
 
 @NoArgsConstructor
 @Getter                 // This applies to the whole class
@@ -19,7 +20,10 @@ public class Ambulance {
     @Setter
     private String name;
 
-    //private List<String> phone;     // @Getter  to add getter/setter for specific state
+    @ElementCollection
+    @CollectionTable(name = "phone", joinColumns = @JoinColumn(name = "id"))  //You cannot create Table/class for String
+    @Column(name = "phones")
+    private List<String> phones;
 
     @Setter
     private double longitude;
@@ -34,16 +38,19 @@ public class Ambulance {
     @Column(name = "created_on")
     private LocalDate createdOn;
 
+    @OneToOne(cascade = CascadeType.ALL)  //Cascade to if the Ambulance is deleted, address is also deleted
+    @JoinColumn(name = "fk_address_id")
+    private  Address address;
 
-    //private  Address address;
 
-
-    public Ambulance(String name, double longitude, double latitude, boolean isAvailable, LocalDate createdOn) {
+    public Ambulance(String name, double longitude, double latitude, boolean isAvailable, LocalDate createdOn,Address address,List<String> phones) {
         this.name = name;
         this.longitude = longitude;
         this.latitude = latitude;
         this.isAvailable = isAvailable;
         this.createdOn = createdOn;
+        this.address=address;
+        this.phones=phones;
     }
 
 }
